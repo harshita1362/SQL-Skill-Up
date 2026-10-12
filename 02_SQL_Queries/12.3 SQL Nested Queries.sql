@@ -1,0 +1,55 @@
+-- SQL Nested Queries
+
+-- Independent Nested Queries
+-- Example 1: Using IN
+SELECT C_ID FROM COURSE WHERE C_NAME IN ('DSA', 'DBMS');
+SELECT S_ID FROM STUDENT_COURSE 
+WHERE C_ID IN (
+  SELECT C_ID FROM COURSE WHERE C_NAME IN ('DSA', 'DBMS')
+);
+
+-- 2. Correlated Nested Queries
+-- Example 2: Using EXISTS
+SELECT S_NAME FROM STUDENT S
+WHERE EXISTS (
+  SELECT 1 FROM STUDENT_COURSE SC
+  WHERE S.S_ID = SC.S_ID AND SC.C_ID = 'C1'
+);
+
+-- Common SQL Operators for Nested Queries
+-- 1. IN Operator
+SELECT S_NAME FROM STUDENT
+WHERE S_ID IN (
+  SELECT S_ID FROM STUDENT_COURSE
+  WHERE C_ID IN (
+    SELECT C_ID FROM COURSE WHERE C_NAME IN ('DSA', 'DBMS')
+  )
+);
+
+-- 2. NOT IN Operator
+SELECT S_ID FROM STUDENT
+WHERE S_ID NOT IN (
+  SELECT S_ID FROM STUDENT_COURSE
+  WHERE C_ID IN (
+    SELECT C_ID FROM COURSE WHERE C_NAME IN ('DSA', 'DBMS')
+  )
+);
+
+-- 3. ANY Operator
+SELECT S_NAME
+FROM Student_Details s
+WHERE EXISTS (
+  SELECT 1
+  FROM Student_Details d
+  WHERE d.S_ADDRESS = 'LONDON'
+    AND s.S_AGE > d.S_AGE
+);
+
+-- 4. ALL Operator
+SELECT S_NAME 
+FROM Student_Details
+WHERE S_AGE > (
+  SELECT MAX(S_AGE)
+  FROM Student_Details
+  WHERE S_ADDRESS = 'London'
+);
